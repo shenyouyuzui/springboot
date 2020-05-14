@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tkrs.mapper.CbondRateMapper">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap" type="com.tkrs.domain.CbondRateDomain">
+		<result column="company" property="company" />
+		<result column="date" property="date" />
+		<result column="code" property="code" />
+		<result column="rate_former" property="rateFormer" />
+	</resultMap>
+
+	<select id="queryAll" resultMap="baseResultMap" parameterType="Object">
+		select id,company,date,code,rateFormer from c_bondrate where
+		company=#{company} and rate_former=#{rateFormer}
+	</select>
+	
+	<select id="queryRateFormerByCode" resultType="java.lang.String" parameterType="java.lang.String">
+		select rate_former from c_bondrate where code=#{code} order by date desc limit 0,1;
+	</select>
+	
+	<!-- <select id="queryAllCode" resultMap="baseResultMap"> 
+		select distinct code from c_bondrate where rate_former in(#{cbondPageVo.rateFormer},#{rateFormer1},#{rateFormer2}) and company=#{cbondPageVo.company} order by date desc;
+	</select> -->
+	<select id="queryAllCode" resultMap="baseResultMap"> 
+		select distinct code from c_bondrate where rate_former in(#{arg0.rateFormer},#{arg1},#{arg2}) and company=#{arg0.company} order by date desc;
+	</select>
+
+</mapper>

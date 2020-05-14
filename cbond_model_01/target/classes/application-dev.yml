@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/edata
+    driver: com.mysql.jdbc.Driver
+    username: root
+    password: root
+  redis:
+    minIdle: 5
+    maxIdle: 10
+    maxTotal: 50
+    maxWaitMillis: 1500
+    testOnBorrow: true
+    numTestsPerEvictionRun: 1024
+    timeBetweenEvictionRunsMillis: 30000
+    minEvictableIdleTimeMillis: 1800000
+    softMinEvictableIdleTimeMillis: 10000
+    testWhileIdle: true
+    blockWhenExhausted: false
+    host: 127.0.0.1
+    port: 6379
+    
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.tkrs.mapper
+  
