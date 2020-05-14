@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvcp.mapper.ActorMapper">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap"
+		type="com.tvcp.domain.ActorDomain">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="sex" property="sex" />
+		<result column="birthday" property="birthday" />
+		<result column="age" property="age" />
+		<result column="country" property="country" />
+		<result column="hobby" property="hobby" />
+		<result column="detail" property="detail" />
+	</resultMap>
+
+	<insert id="importExcel" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.List">
+		insert into tv_actor (name,sex,birthday,age,country,hobby,detail)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.name},#{item.sex},#{item.birthday},#{item.age},#{item.country},#{item.hobby},#{item.detail})
+		</foreach>
+	</insert>
+
+	<select id="searchActor" resultMap="baseResultMap">
+		select id,name from tv_actor
+		<trim prefix="where" prefixOverrides="and">
+			<if test="sex != null">
+				and sex=#{sex}
+			</if>
+			<if test="coninfo != null">
+				and hobby regexp #{coninfo}
+			</if>
+			<if test="countryList != null">
+				and country in
+				<foreach collection="countryList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="agelist != null">
+				<foreach collection="agelist" item="item" index="index" open="and (" close=")"
+					 separator="or">
+					birthday&gt;=#{item.startTime} and birthday&lt;=#{item.endTime}
+				</foreach>
+			</if>
+		</trim>
+		limit #{pageNum},#{pageSize}
+	</select>
+
+	<select id="queryByConditionCount"
+		resultType="java.lang.Integer">
+		select count(1) from tv_actor
+			<trim prefix="where" prefixOverrides="and">
+			<if test="sex != null">
+				and sex=#{sex}
+			</if>
+			<if test="coninfo != null">
+				and hobby regexp #{coninfo}
+			</if>
+			<if test="countryList != null">
+				and country in
+				<foreach collection="countryList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="agelist != null">
+				<foreach collection="agelist" item="item" index="index" open="and (" close=")"
+					 separator="or">
+					birthday&gt;=#{item.startTime} and birthday&lt;=#{item.endTime}
+				</foreach>
+			</if>
+		</trim>
+	</select>
+
+	<select id="queryDetail" resultMap="baseResultMap"
+		parameterType="java.lang.Integer">
+		select id,name,birthday,country,hobby,sex,age,detail
+		from tv_actor where id=#{id}
+	</select>
+	
+	<select id="initCountry" resultType="java.lang.String">
+		select distinct country from tv_actor where country!=""
+	</select>
+	
+	<select id="initHobby" resultType="java.lang.String">
+		select hobby from tv_actor where hobby!=""
+	</select>
+
+</mapper>

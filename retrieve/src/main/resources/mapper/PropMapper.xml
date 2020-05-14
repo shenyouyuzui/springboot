@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvcp.mapper.PropMapper">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap"
+		type="com.tvcp.domain.PropDomain">
+		<result column="id" property="id" />
+		<result column="supplier_name" property="supplierName" />
+		<result column="label" property="label" />
+		<result column="url" property="url" />
+	</resultMap>
+	<insert id="importExcel" useGeneratedKeys="true"
+		keyProperty="id" parameterType="java.util.List">
+		insert into tv_prop (supplier_name,label,url) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.supplierName},#{item.label},#{item.url})
+		</foreach>
+	</insert>
+
+	<select id="searchProp" resultMap="baseResultMap">
+		select id,supplier_name from tv_prop
+			<if test="lableList != null">
+				where label in
+				<foreach collection="lableList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		limit #{pageNum},#{pageSize}
+	</select>
+
+	<select id="queryByConditionCount"
+		parameterType="java.util.List" resultType="java.lang.Integer">
+		select count(1) from tv_prop
+			<if test="list != null">
+				where label in
+				<foreach collection="list" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+	</select>
+
+	<select id="queryDetail" resultMap="baseResultMap"
+		parameterType="java.lang.Integer">
+		select id,supplier_name,label,url
+		from tv_prop where
+		id=#{id}
+	</select>
+
+	<select id="initLabel" resultType="java.lang.String">
+		select distinct label from
+		tv_prop where label!=""
+	</select>
+</mapper>

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: pro
+    
+server:
+  servlet:
+    context-path: /retrieve
+    
+logging:
+  level:
+    com.tvcp.mapper: DEBUG

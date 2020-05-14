@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvcp.mapper.AreaMapper">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap"
+		type="com.tvcp.domain.AreaDomain">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="nature" property="nature" />
+		<result column="years" property="years" />
+		<result column="type" property="type" />
+		<result column="feature" property="feature" />
+		<result column="stage" property="stage" />
+		<result column="address" property="address" />
+		<result column="information" property="information" />
+		<result column="expense" property="expense" />
+		<result column="url" property="url" />
+	</resultMap>
+
+	<insert id="importExcel" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+		insert into tv_area
+		(name,nature,years,type,feature,stage,address,information,expense,url)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.name},#{item.nature},#{item.years},#{item.type},#{item.feature},#{item.stage},#{item.address},#{item.information},#{item.expense},#{item.url})
+		</foreach>
+	</insert>
+	<select id="searchArea" resultMap="baseResultMap">
+		select id,name,nature from tv_area
+		<trim prefix="where" prefixOverrides="and">
+			<if test="featureList != null">
+				and feature in
+				<foreach collection="featureList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="natureList != null">
+				and nature in
+				<foreach collection="natureList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="stageList != null">
+				and stage in
+				<foreach collection="stageList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="typeList != null">
+				and type in
+				<foreach collection="typeList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="yearsList != null">
+				and years in
+				<foreach collection="yearsList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</trim>
+		limit #{pageNum},#{pageSize}
+	</select>
+	
+	<select id="queryByConditionCount" resultType="java.lang.Integer">
+		select count(1) from tv_area
+		<trim prefix="where" prefixOverrides="and">
+			<if test="featureList != null">
+				and feature in
+				<foreach collection="featureList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="natureList != null">
+				and nature in
+				<foreach collection="natureList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="stageList != null">
+				and stage in
+				<foreach collection="stageList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="typeList != null">
+				and type in
+				<foreach collection="typeList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="yearsList != null">
+				and years in
+				<foreach collection="yearsList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</trim>
+	</select>
+	
+	<select id="queryDetail" resultMap="baseResultMap"
+		parameterType="java.lang.Integer">
+		select id,name,nature,years,type,feature,stage,address,information,expense,url
+		from tv_area where id=#{id}
+	</select>
+	<select id="initFeature" resultType="java.lang.String">
+		select distinct feature from tv_area where feature!=""
+	</select>
+	<select id="initType" resultType="java.lang.String">
+		select distinct type from tv_area where type!=""
+	</select>
+	<select id="initYears" resultType="java.lang.String">
+		select distinct years from tv_area where years!=""
+	</select>
+	<select id="initNature" resultType="java.lang.String">
+		select distinct nature from tv_area where nature!=""
+	</select>
+	
+</mapper>

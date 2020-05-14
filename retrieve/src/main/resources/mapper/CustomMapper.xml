@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvcp.mapper.CustomMapper">
+	<!-- Result Map -->
+	<resultMap id="baseResultMap"
+		type="com.tvcp.domain.CustomDomain">
+		<result column="custom_id" property="customId" />
+		<result column="name" property="name" />
+		<result column="sex" property="sex" />
+		<result column="age" property="age" />
+		<result column="class" property="type" />
+		<result column="label" property="label" />
+		<result column="channel" property="channel" />
+		<result column="info" property="info" />
+	</resultMap>
+
+	<select id="initLabel" resultType="java.lang.String">
+		select distinct label from
+		tv_custom where label!=""
+	</select>
+	<select id="initName" resultType="java.lang.String">
+		select distinct name from
+		tv_custom where name!=""
+	</select>
+	<select id="initAge" resultType="java.lang.String">
+		select distinct age from
+		tv_custom where age!=""
+	</select>
+	<select id="initType" resultType="java.lang.String">
+		select distinct class from
+		tv_custom where class!=""
+	</select>
+	<select id="initChannel" resultType="java.lang.String">
+		select distinct channel from
+		tv_custom where channel!=""
+	</select>
+
+	<select id="searchCustom" resultMap="baseResultMap">
+		select custom_id,name from tv_custom
+		<trim prefix="where" prefixOverrides="and">
+			<if test="sex != null">
+				and sex=#{sex} or sex=2
+			</if>
+			<if test="ageList != null">
+				and age in
+				<foreach collection="ageList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="channelList != null">
+				and channel in
+				<foreach collection="channelList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="labelList != null">
+				and label in
+				<foreach collection="labelList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="nameList != null">
+				and name in
+				<foreach collection="nameList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="typeList != null">
+				and class in
+				<foreach collection="typeList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</trim>
+		limit #{pageNum},#{pageSize}
+	</select>
+	
+	<select id="queryByConditionCount" resultType="java.lang.Integer">
+		select count(1) from tv_custom
+		<trim prefix="where" prefixOverrides="and">
+			<if test="sex != null">
+				and sex=#{sex}
+			</if>
+			<if test="ageList != null">
+				and age in
+				<foreach collection="ageList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="channelList != null">
+				and channel in
+				<foreach collection="channelList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="labelList != null">
+				and label in
+				<foreach collection="labelList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="nameList != null">
+				and name in
+				<foreach collection="nameList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="typeList != null">
+				and class in
+				<foreach collection="typeList" item="item" index="index"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</trim>
+	</select>
+	
+	<select id="queryDetail" resultMap="baseResultMap"
+		parameterType="java.lang.Integer">
+		select custom_id,name,sex,age,class,label,channel,info
+		from tv_custom where custom_id=#{customId}
+	</select>
+</mapper>
